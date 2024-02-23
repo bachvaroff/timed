@@ -42,7 +42,9 @@ static char sccsid[] = "@(#)timed.c	8.1 (Berkeley) 6/6/93";
 #endif
 
 #include <sys/cdefs.h>
+#ifndef linux
 __FBSDID("$FreeBSD$");
+#endif
 
 #include "globals.h"
 #include <net/if.h>
@@ -53,6 +55,9 @@ __FBSDID("$FreeBSD$");
 #include <math.h>
 #include <sys/types.h>
 #include <sys/times.h>
+#ifdef linux
+#include <unistd.h>
+#endif
 
 int trace = 0;
 int sock, sock_raw = -1;
@@ -60,6 +65,9 @@ int status = 0;
 u_short sequence;			/* sequence number */
 long delay1;
 long delay2;
+#ifdef linux
+long CLK_TCK;
+#endif
 
 int nslavenets;				/* nets were I could be a slave */
 int nmasternets;			/* nets were I could be a master */
@@ -133,6 +141,10 @@ main(int argc, char *argv[])
 
 #ifdef lint
 	ntip = NULL;
+#endif
+
+#ifdef linux
+	CLK_TCK = sysconf(_SC_CLK_TCK);
 #endif
 
 	on = 1;
@@ -269,10 +281,16 @@ main(int argc, char *argv[])
 	if (ioctl(sock, SIOCGIFCONF, (char *)&ifc) < 0)
 		err(1, "get interface configuration");
 	ntp = NULL;
+#ifndef linux
 #define size(p)	max((p).sa_len, sizeof(p))
+#endif
 	cplim = buf + ifc.ifc_len; /*skip over if's with big ifr_addr's */
 	for (cp = buf; cp < cplim;
+#ifndef linux
 			cp += sizeof (ifr->ifr_name) + size(ifr->ifr_addr)) {
+#else
+			cp += sizeof (*ifr)) {
+#endif
 		ifr = (struct ifreq *)cp;
 		if (ifr->ifr_addr.sa_family != AF_INET)
 			continue;
@@ -745,7 +763,7 @@ void
 get_goodgroup(int force)
 {
 # define NG_DELAY (30*60*CLK_TCK)	/* 30 minutes */
-	static unsigned long last_update = -NG_DELAY;
+	static unsigned long last_update;
 	unsigned long new_update;
 	struct goodhost *ghp, **ghpp;
 #ifdef HAVENIS
@@ -753,7 +771,8 @@ get_goodgroup(int force)
 	char *mach, *usr, *dom;
 #endif /* HAVENIS */
 	struct tms tm;
-
+	
+	last_update = -NG_DELAY;
 
 	/* if no netgroup, then we are finished */
 	if (goodgroup == NULL || !Mflag)

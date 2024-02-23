@@ -77,7 +77,7 @@ void	 print(struct tsp *, struct sockaddr_in *);
 void	 prthp(clock_t);
 void	 rmnetmachs(struct netinfo *);
 void	 setstatus(void);
-void	 slave(void) __dead2;
+void	 slave(void);
 void	 slaveack(void);
 void	 spreadtime(void);
 void	 suppress(struct sockaddr_in *, char *, struct netinfo *);

@@ -39,7 +39,9 @@ static const char rcsid[] =
 
 #include "globals.h"
 #include <setjmp.h>
+#ifndef linux
 #include <utmpx.h>
+#endif
 #include "pathnames.h"
 
 extern jmp_buf jmpenv;
@@ -77,7 +79,9 @@ slave(void)
 	char newdate[32];
 	struct netinfo *ntp;
 	struct hosttbl *htp;
+#ifndef linux
 	struct utmpx utx;
+#endif
 
 
 	old_slavenet = NULL;
@@ -279,13 +283,17 @@ loop:
 				 */
 				synch(tvtomsround(ntime));
 			} else {
+#ifndef linux
 				utx.ut_type = OLD_TIME;
 				gettimeofday(&utx.ut_tv, NULL);
 				pututxline(&utx);
+#endif
 				(void)settimeofday(&tmptv, 0);
+#ifndef linux
 				utx.ut_type = NEW_TIME;
 				gettimeofday(&utx.ut_tv, NULL);
 				pututxline(&utx);
+#endif
 				syslog(LOG_NOTICE,
 				       "date changed by %s from %s",
 					msg->tsp_name, olddate);

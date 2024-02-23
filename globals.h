@@ -47,8 +47,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef linux
+#include <bsd/stdlib.h>
+#include <bsd/string.h>
+#endif
 #include <syslog.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <protocols/timed.h>
 #define	SECHR	(60*60)
@@ -152,7 +157,9 @@ extern int nslavenets;			/* nets were I could be a slave */
 extern int nmasternets;			/* nets were I could be a master */
 extern int nignorednets;		/* ignored nets */
 extern int nnets;			/* nets I am connected to */
-
+#ifdef linux
+extern long CLK_TCK;
+#endif
 
 #define trace_msg(msg)		{if (trace) fprintf(fd, msg);}
 

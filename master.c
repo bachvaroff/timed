@@ -42,7 +42,9 @@ static const char rcsid[] =
 #include <sys/types.h>
 #include <sys/times.h>
 #include <setjmp.h>
+#ifndef linux
 #include <utmpx.h>
+#endif
 #include "pathnames.h"
 
 extern int measure_delta;
@@ -348,7 +350,9 @@ mchgdate(struct tsp *msg)
 	char tname[MAXHOSTNAMELEN];
 	char olddate[32];
 	struct timeval otime, ntime, tmptv;
+#ifndef linux
 	struct utmpx utx;
+#endif
 
 	(void)strcpy(tname, msg->tsp_name);
 
@@ -370,13 +374,15 @@ mchgdate(struct tsp *msg)
 		dictate = 3;
 		synch(tvtomsround(ntime));
 	} else {
+#ifndef linux
 		utx.ut_type = OLD_TIME;
 		(void)gettimeofday(&utx.ut_tv, NULL);
 		pututxline(&utx);
- 		(void)settimeofday(&tmptv, 0);
+		(void)settimeofday(&tmptv, 0);
 		utx.ut_type = NEW_TIME;
 		(void)gettimeofday(&utx.ut_tv, NULL);
 		pututxline(&utx);
+#endif
 		spreadtime();
 	}
 
@@ -541,11 +547,11 @@ static struct hosttbl *lasthfree = &hosttbl[0];
 struct hosttbl *			/* answer or 0 */
 findhost(char *name)
 {
-	int i, j;
+	unsigned int i, j;
 	struct hosttbl *htp;
-	char *p;
+	unsigned char *p;
 
-	j= 0;
+	j = 0;
 	for (p = name, i = 0; i < 8 && *p != '\0'; i++, p++)
 		j = (j << 2) ^ *p;
 	newhost_hash = &hosttbl[j % NHOSTS];
