@@ -62,11 +62,18 @@ char	*margv[MAX_MARGV];
 char	cmdline[200];
 jmp_buf	toplevel;
 static struct cmd *getcmd(char *);
+#ifdef linux
+long CLK_TCK;
+#endif
 
 int
 main(int argc, char *argv[])
 {
 	register struct cmd *c;
+
+#ifdef linux
+	CLK_TCK = sysconf(_SC_CLK_TCK);
+#endif
 
 	openlog("timedc", 0, LOG_AUTH);
 

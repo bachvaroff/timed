@@ -13,15 +13,18 @@ LD_LIBRARY_PATH=
 .c.o:
 	$(COMPILE) -c $< -o $@
 
-all: timed
+all: timed timedc
 
 timed: acksend.o byteorder.o candidate.o cksum.o correct.o master.o measure.o networkdelta.o readmsg.o slave.o timed.o
 	$(LINK) $^ $(LDPOSTFLAGS0) -o $@
 
-install: timed
+timedc: cmds.o cmdtab.o timedc.o measure.o byteorder.o cksum.o
+	$(LINK) $^ $(LDPOSTFLAGS0) -o $@
+
+install: timed timedc
 	mkdir -p /usr/local/bin
-	cp ./timed /usr/local/bin/
+	cp ./timed ./timedc /usr/local/bin/
 
 clean:
-	rm -f *.o timed
+	rm -f *.o timed timedc
 

@@ -87,3 +87,13 @@ void	 timevalsub(struct timeval *, struct timeval *, struct timeval *);
 void	 traceoff(char *);
 void	 traceon(void);
 void	 xmit(int, u_int, struct sockaddr_in *);
+void	 clockdiff(int, char *[]);
+void	 help(int, char *[]);
+void	 intr(int);
+void	 makeargv(void);
+void	 msite(int, char *[]);
+int	 priv_resources(void);
+void	 quit(void);
+void	 testing(int, char *[]);
+void	 tracing(int, char *[]);
+

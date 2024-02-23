@@ -39,6 +39,7 @@ static char sccsid[] = "@(#)cmds.c	8.1 (Berkeley) 6/6/93";
 __FBSDID("$FreeBSD$");
 #endif
 
+#define NO_TIMED_INCLUDE
 #include "timedc.h"
 #include <sys/file.h>
 
@@ -85,7 +86,7 @@ void bytehostorder(struct tsp *);
 /* compute the difference between our date and another machine
  */
 static int				/* difference in days from our time */
-daydiff(char *hostname)
+daydiff(char *host)
 {
 	int i;
 	int trials;
@@ -132,7 +133,7 @@ daydiff(char *hostname)
 			sec = ntohl(sec);
 			if (sec < BU) {
 				warnx("%s says it is before 1970: %lu",
-					hostname, sec);
+					host, sec);
 				return 0;
 			}
 			sec -= BU;
@@ -143,7 +144,7 @@ daydiff(char *hostname)
 	}
 
 	/* if we get here, we tried too many times */
-	warnx("%s will not tell us the date", hostname);
+	warnx("%s will not tell us the date", host);
 	return 0;
 }
 

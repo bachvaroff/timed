@@ -1,9 +1,7 @@
-/*	$FreeBSD$	*/
-
 /*-
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Copyright (c) 1993
+ * Copyright (c) 1985, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,23 +28,37 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	8.1 (Berkeley) 6/6/93
+ *	@(#)timedc.h	8.1 (Berkeley) 6/6/93
+ *
+ * $FreeBSD$
  */
 
-#if __STDC__
-struct tsp;
-#endif
+#include <sys/param.h>
+#include <sys/time.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#include <errno.h>
+#include <netdb.h>
+#include <stdio.h>
+
+#define ON		1
+#define OFF		0
+
+#define GOOD		1
+#define UNREACHABLE	2
+#define NONSTDTIME	3
+#define HOSTDOWN 	0x7fffffff
+
+struct	cmd {
+	char	*c_name;		/* command name */
+	char	*c_help;		/* help message */
+	void	(*c_handler)();		/* routine to do the work */
+	int	c_priv;			/* privileged command */
+};
 
 extern struct cmd cmdtab[];
 
-void	bytehostorder(struct tsp *);
-void	bytenetorder(struct tsp *);
-void	clockdiff(int, char *[]);
-void	help(int, char *[]);
-void	intr(int);
-void	makeargv(void);
-void	msite(int, char *[]);
-int	priv_resources(void);
-void	quit(void);
-void	testing(int, char *[]);
-void	tracing(int, char *[]);
+#include "globals.h"
+

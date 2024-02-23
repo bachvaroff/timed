@@ -55,7 +55,10 @@
 #include <unistd.h>
 #include <time.h>
 
+#ifndef NO_TIMED_INCLUDE
 #include <protocols/timed.h>
+#endif
+
 #define	SECHR	(60*60)
 #define	SECDAY	(24*SECHR)
 
