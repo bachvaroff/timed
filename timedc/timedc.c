@@ -131,8 +131,10 @@ main(int argc, char *argv[])
 }
 
 void
-intr(int signo __unused)
+intr(int signo)
 {
+	(void)signo;
+
 	if (!fromatty)
 		exit(0);
 	longjmp(toplevel, 1);

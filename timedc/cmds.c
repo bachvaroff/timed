@@ -35,7 +35,9 @@ static char sccsid[] = "@(#)cmds.c	8.1 (Berkeley) 6/6/93";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
+#ifndef linux
 __FBSDID("$FreeBSD$");
+#endif
 
 #include "timedc.h"
 #include <sys/file.h>
@@ -49,6 +51,10 @@ __FBSDID("$FreeBSD$");
 #include <err.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef linux
+#include <bsd/stdlib.h>
+#include <bsd/string.h>
+#endif
 #include <unistd.h>
 
 #define TSPTYPES
