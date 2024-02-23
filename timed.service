@@ -1,0 +1,12 @@
+[Unit]
+Description=4.3BSD timed service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/timed -d -M
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
