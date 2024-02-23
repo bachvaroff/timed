@@ -378,7 +378,9 @@ mchgdate(struct tsp *msg)
 		utx.ut_type = OLD_TIME;
 		(void)gettimeofday(&utx.ut_tv, NULL);
 		pututxline(&utx);
+#endif
 		(void)settimeofday(&tmptv, 0);
+#ifndef linux
 		utx.ut_type = NEW_TIME;
 		(void)gettimeofday(&utx.ut_tv, NULL);
 		pututxline(&utx);
